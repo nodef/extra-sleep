@@ -1,6 +1,6 @@
 {
   "name": "extra-sleep",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Sleep for specified time.",
   "preferGlobal": true,
   "main": "index.js",
@@ -35,6 +35,6 @@
     "@types/node": "^17.0.23",
     "extra-build": "^2.0.31",
     "rollup-plugin-cleanup": "^3.2.1",
-    "rollup-plugin-dts": "^4.2.0"
+    "rollup-plugin-dts": "^4.2.1"
   }
 }
