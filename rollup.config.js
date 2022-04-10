@@ -28,4 +28,12 @@ export default [{
     exports: "auto"
   },
   plugins: [resolve(), commonjs(), cleanup({comments: "none"})]
+}, {
+  input: ".build/=bin.js",
+  output: {
+    file: "bin.mjs",
+    format: "cjs",
+    exports: "auto"
+  },
+  plugins: [resolve(), commonjs(), cleanup({comments: "none"})]
 }];

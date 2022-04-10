@@ -23,7 +23,7 @@ function isSubmodule(pth) {
 
 // Get filename keywords for main/sub package.
 function filenameKeywords(fil) {
-  if (fil !== srcts) return [path.keywordname(fil)];
+  if (fil !== srcts) return [path.symbolname(fil)];
   return fs.readdirSync('src').filter(isSubmodule).map(path.keywordname);
 }
 
@@ -32,14 +32,14 @@ function filenameKeywords(fil) {
 function exportKeywords(fil) {
   var txt  = fs.readFileTextSync(`src/${fil}`);
   var exps = javascript.jsdocSymbols(txt).filter(s => s.export);
-  return exps.map(e => path.keywordname(e.name));
+  return exps.map(e => path.symbolname(e.name));
 }
 
 
 // Get keywords for main/sub package.
-function keywords(fil) {
+function keywords(fil, add=[]) {
   var m = package.read('.');
-  var s = new Set([...m.keywords, ...filenameKeywords(fil), ...exportKeywords(fil)]);
+  var s = new Set([...m.keywords, ...add, ...filenameKeywords(fil), ...exportKeywords(fil)]);
   return Array.from(s);
 }
 
@@ -96,11 +96,36 @@ function publishRoot(sym, ver) {
     var m = package.read();
     m.version  = ver;
     m.keywords = keywords(srcts);
+    m.preferGlobal = undefined;
+    m.bin = undefined;
     if (sym) { m.name += '.web'; }
     fs.restoreFileSync('README.md', () => {
       var txt = fs.readFileTextSync('README.md');
       if (sym) txt = txt.replace(/\[Files\]\((.*?)\/\)/g, '[Files]($1.web/)');
       fs.writeFileTextSync('README.md', txt);
+      package.write('.', m);
+      package.publish('.');
+      try { package.publishGithub('.', owner); }
+      catch (e) { console.error(e); }
+    });
+  });
+}
+
+
+// Publish bin package to NPM, GitHub.
+function publishBin(sym, ver) {
+  fs.restoreFileSync('package.json', () => {
+    var m = package.read();
+    m.version  = ver;
+    m.keywords = keywords(srcts, ['cli', 'command', 'line', 'interface', 'shell', 'bash']);
+    m.name += '.sh';
+    m.module = undefined;
+    m.sideEffects = undefined;
+    m.exports = undefined;
+    m.keywords = [].
+    fs.restoreFileSync('README.md', () => {
+      fs.unlinkSync('README.md');
+      fs.renameSync('bin.md', 'README.md');
       package.write('.', m);
       package.publish('.');
       try { package.publishGithub('.', owner); }
@@ -118,6 +143,7 @@ function deployRoot(ver) {
   publishRoot('', ver);
   generateMain(srcts, sym);
   publishRoot(sym, ver);
+  publishBin('', ver);
 }
 
 
@@ -133,87 +159,16 @@ function deployAll() {
 }
 
 
-// Get markdown for JSDoc symbol.
-function jsdocSymbolMarkdown(sym, pre, repo) {
-  var x   = jsdoc.parse(sym.jsdoc);
-  var nam = pre? `${pre}.${sym.name}`   : sym.name;
-  var pkg = pre? `@${repo}/${sym.name}` : repo;
-  var sig = `${nam}(${x.params.map(p => p.name).join(', ')})`;
-  var len = Math.max(...x.params.map(p => p.name.length)) + 2;
-  var par = x.params.map(p => `// ${(p.name+':').padEnd(len, ' ')}${p.description}`).join('\n');
-  return `${x.description}<br>\n` +
-    `📦 [NPM](https://www.npmjs.com/package/${pkg}),\n` +
-    `🌐 [Web](https://www.npmjs.com/package/${pkg}.web),\n` +
-    `📜 [Files](https://unpkg.com/${pkg}/),\n` +
-    `📰 [Docs](https://nodef.github.io/${repo}/).\n\n` +
-    `> Similar: [${nam}].\n\n` +
-    `<br>\n\n` +
-    '```javascript\n' +
-    `${sig};\n` +
-    `${par}\n` +
-    '```\n\n' +
-    '```javascript\n' +
-    `const ${nam} = require("${repo}");\n\n` +
-    `${nam}(...);\n` +
-    `// → OUTPUT\n` +
-    '```\n\n' +
-    '<br>\n' +
-    '<br>\n\n\n' +
-    `## References\n\n` +
-    `- [Example](https://www.example.com/)\n\n` +
-    `[${nam}]: https://github.com/${owner}/${repo}/wiki/${nam}\n`
-}
-
-
 // Process each source file.
 function forEachSourceFile(fn) {
   for (var f of fs.readdirSync('src')) {
-    if (f.startsWith('_')) continue;
+    if (!/^[A-Z0-9]/i.test(f)) continue;
     var txt = fs.readFileTextSync(`src/${f}`);
     var exps = javascript.exportSymbols(txt);
     var docs = javascript.jsdocSymbols(txt);
     var dmap = new Map(docs.map(x => [x.name, x]));
     fn(f, exps, dmap);
   }
-}
-
-
-// Create empty wiki files for all exported symbols.
-function createWikiFiles() {
-  forEachSourceFile((f, exps) => {
-    var nam = f.replace(/\..*/, '');
-    var pre = f === 'index.ts'? '' : nam;
-    for (var e of exps) {
-      var out = `wiki/${pre}${e.name}.md`;
-      if (fs.existsSync(out)) continue;
-      fs.writeFileTextSync(out, '');
-    }
-  });
-}
-
-
-// Generate wiki file text for all exported symbols.
-function generateWikiFiles() {
-  var m = package.read('.');
-  forEachSourceFile((f, exps, dmap) => {
-    var nam = f.replace(/\..*/, '');
-    var pre = f === 'index.ts'? '' : nam;
-    for (var e of exps) {
-      var out = `wiki/${pre}${e.name}.md`;
-      if (!fs.existsSync(out)) continue;
-      if (fs.readFileTextSync(out).length > 0) continue;
-      if (!dmap.has(e.name)) continue;
-      var md = jsdocSymbolMarkdown(dmap.get(e.name), pre, m.name);
-      fs.writeFileTextSync(out, md);
-    }
-  });
-}
-
-
-// Generate wiki for all exported symbols.
-function generateWiki() {
-  createWikiFiles();
-  generateWikiFiles();
 }
 
 
@@ -289,7 +244,7 @@ function updateMarkdownLinkReferences() {
 }
 
 
-// Update markdowns README, wiki.
+// Update markdowns README.
 function updateMarkdown() {
   updateMarkdownIndex(/const|class|(async\s+)?function\*?/);
   updateMarkdownLinkReferences();
@@ -298,7 +253,6 @@ function updateMarkdown() {
 
 function main(a) {
   if (a[2] === 'deploy') deployAll();
-  else if (a[2] === 'wiki') generateWiki();
   else if (a[2] === 'markdown') updateMarkdown();
   else generateMain(srcts, '');
 }

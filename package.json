@@ -1,11 +1,15 @@
 {
   "name": "extra-sleep",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Sleep for specified time.",
-  "preferGlobal": true,
   "main": "index.js",
   "module": "index.mjs",
+  "preferGlobal": true,
   "sideEffects": false,
+  "bin": {
+    "extra-sleep": "index.js",
+    "esleep": "index.js"
+  },
   "exports": {
     "require": "./index.js",
     "import": "./index.mjs"
