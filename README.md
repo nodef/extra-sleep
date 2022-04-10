@@ -1,6 +1,6 @@
 Sleep for specified time.<br>
 📦 [Node.js](https://www.npmjs.com/package/extra-sleep),
-🌐 [Web](https://www.npmjs.com/package/extra-sleep.sh.web),
+🌐 [Web](https://www.npmjs.com/package/extra-sleep.web),
 🖥️ [Shell](https://www.npmjs.com/package/extra-sleep.sh),
 📜 [Files](https://unpkg.com/extra-sleep/),
 📰 [Docs](https://nodef.github.io/extra-sleep/).
@@ -23,7 +23,7 @@ is exposed as `extra_sleep` standalone variable and can be loaded from
 <br>
 
 ```javascript
-const fyers = require('extra-sleep');
+const {sleep} = require('extra-sleep');
 
 
 async function main() {
@@ -42,7 +42,8 @@ main();
 
 | Property | Description |
 |  ----  |  ----  |
-| [exchangeDescription] | Get exchange description. |
+| [sleep] | Sleep for specified time (async). |
+| [sleepSync] | Sleep for specified time. |
 
 <br>
 <br>
@@ -59,3 +60,7 @@ main();
 <br>
 
 [![](https://img.youtube.com/vi/rCSCPujLs14/maxresdefault.jpg)](https://www.youtube.com/watch?v=rCSCPujLs14)
+
+
+[sleep]: https://nodef.github.io/extra-sleep/modules.html#sleep
+[sleepSync]: https://nodef.github.io/extra-sleep/modules.html#sleepSync

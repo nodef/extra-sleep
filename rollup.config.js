@@ -31,9 +31,10 @@ export default [{
 }, {
   input: ".build/=bin.js",
   output: {
-    file: "bin.mjs",
+    file: "bin.js",
     format: "cjs",
-    exports: "auto"
+    exports: "auto",
+    banner: "#!/usr/bin/env node",
   },
   plugins: [resolve(), commonjs(), cleanup({comments: "none"})]
 }];

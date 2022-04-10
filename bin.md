@@ -34,13 +34,13 @@ $ esleep <number>[unit] ... | [option]
 
 ```bash
 # sleep for 0.1 seconds
-$ sleep 0.1
+$ esleep 0.1
 
 # sleep for 1.23 minutes
-$ sleep 1.23m
+$ esleep 1.23m
 
 # sleep for 1 day 23 hours
-$ sleep 1d 23h
+$ esleep 1d 23h
 ```
 
 <br>

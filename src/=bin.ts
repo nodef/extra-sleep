@@ -42,12 +42,13 @@ function parseQuantities(txt: string, o: any): [number, number][] {
   var a = [], m = null;
   while ((m = RQUANTITY.exec(txt)) != null) {
     var n      = parseFloat(m[1]);
-    var unit   = (m[2] || "").charAt(0).toLowerCase();
-    var factor = UNIT_FACTOR.get(unit) || 1;
-    if (!Number.isFinite(n) || !Number.isFinite(factor) || n < 0)
+    var unit   = (m[2] || "s").charAt(0).toLowerCase();
+    var factor = UNIT_FACTOR.get(unit) || 0;
+    if (!Number.isFinite(n) || !Number.isFinite(factor) || n < 0 || factor === 0)
       o.error = `invalid time interval ‘${m[0]}’`;
     a.push([n, factor]);
   }
+  if (a.length === 0) o.error = `missing operand`;
   return a;
 }
 
@@ -56,15 +57,16 @@ function parseOption(o: any, k: string, a: string[], i: number): number {
   else if (k==="--version") o.version = true;
   else if (k.startsWith("-")) o.error = `unknown option -- ${k}`;
   else o.value.push(a[i]);
-  return i++;
+  return i + 1;
 }
 
 
 function showHelp(): void {
-  var pth = path.join(__dirname, "README.md");
-  try { cp.execSync(`less "${pth}"`); }
+  var stdio = [0, 1, 2];
+  var pth   = path.join(__dirname, "README.md");
+  try { cp.execSync(`less "${pth}"`, {stdio}); }
   catch (e) {
-    try { cp.execSync(`more "${pth}"`); }
+    try { cp.execSync(`more "${pth}"`, {stdio}); }
     catch (e) { console.log(readFile(pth)); }
   }
 }

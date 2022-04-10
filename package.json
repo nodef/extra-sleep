@@ -1,6 +1,6 @@
 {
   "name": "extra-sleep",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Sleep for specified time.",
   "main": "index.js",
   "module": "index.mjs",
@@ -19,13 +19,13 @@
     "build": "node ./build",
     "deploy": "node ./build deploy"
   },
-  "homepage": "https://github.com/nodef/cli-sleep#readme",
+  "homepage": "https://github.com/nodef/extra-sleep#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nodef/cli-sleep.git"
+    "url": "git+https://github.com/nodef/extra-sleep.git"
   },
   "bugs": {
-    "url": "https://github.com/nodef/cli-sleep/issues"
+    "url": "https://github.com/nodef/extra-sleep/issues"
   },
   "keywords": [
     "extra",

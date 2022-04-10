@@ -7,7 +7,6 @@ data/
 wiki/
 tests/
 TODO
-bin.js
 bin.md
 
 # Build
@@ -18,3 +17,4 @@ tsconfig.json
 jestconfig.json
 rollup.config.js
 build.js
+bin.js

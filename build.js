@@ -9,13 +9,14 @@ const srcts  = 'index.ts';
 const outjs  = 'index.js';
 const outmjs = 'index.mjs';
 const outdts = 'index.d.ts';
+const outbin = 'bin.js';
 
 
 
 
 // Is given file a submodule?
 function isSubmodule(pth) {
-  if (/^_|index.ts$/.test(pth)) return false;
+  if (/^[\W_]|index.ts$/.test(pth)) return false;
   if (!/\.ts$/.test(pth)) return false;
   return true;
 }
@@ -83,9 +84,10 @@ function webifyMain(sym) {
 
 // Generate main output files.
 function generateMain(fil, sym) {
-  var bld = fil.replace(/\.ts/, '.js');
+  var bld = fil? fil.replace(/\.ts/, '.js') : '';
+  var inp = fil? ` -i .build/${bld}` : '';
   var env = sym? ` --environment TYPE:web` : '';
-  cp.execLogSync(`rollup -c rollup.config.js -i .build/${bld}` + env);
+  cp.execLogSync(`rollup -c rollup.config.js` + inp + env);
   if (sym) webifyMain(sym);
 }
 
@@ -97,7 +99,7 @@ function publishRoot(sym, ver) {
     m.version  = ver;
     m.keywords = keywords(srcts);
     m.preferGlobal = undefined;
-    m.bin = undefined;
+    m.bin          = undefined;
     if (sym) { m.name += '.web'; }
     fs.restoreFileSync('README.md', () => {
       var txt = fs.readFileTextSync('README.md');
@@ -119,17 +121,24 @@ function publishBin(sym, ver) {
     m.version  = ver;
     m.keywords = keywords(srcts, ['cli', 'command', 'line', 'interface', 'shell', 'bash']);
     m.name += '.sh';
-    m.module = undefined;
+    m.module      = undefined;
     m.sideEffects = undefined;
-    m.exports = undefined;
-    m.keywords = [].
+    m.exports     = undefined;
     fs.restoreFileSync('README.md', () => {
-      fs.unlinkSync('README.md');
-      fs.renameSync('bin.md', 'README.md');
+      fs.writeFileTextSync('README.md', fs.readFileTextSync('bin.md'));
+      fs.writeFileTextSync('index.js',  fs.readFileTextSync('bin.js'));
+      try { cp.execLogSync(`chmod +x index.js`); }
+      catch (e) {}
+      var dts = fs.readFileTextSync('index.d.ts');
+      var mjs = fs.readFileTextSync('index.mjs');
+      fs.unlinkSync('index.d.ts');
+      fs.unlinkSync('index.mjs');
       package.write('.', m);
       package.publish('.');
       try { package.publishGithub('.', owner); }
       catch (e) { console.error(e); }
+      fs.writeFileTextSync('index.d.ts', dts);
+      fs.writeFileTextSync('index.mjs',  mjs);
     });
   });
 }
@@ -143,6 +152,7 @@ function deployRoot(ver) {
   publishRoot('', ver);
   generateMain(srcts, sym);
   publishRoot(sym, ver);
+  generateMain(null, '');
   publishBin('', ver);
 }
 
@@ -254,6 +264,6 @@ function updateMarkdown() {
 function main(a) {
   if (a[2] === 'deploy') deployAll();
   else if (a[2] === 'markdown') updateMarkdown();
-  else generateMain(srcts, '');
+  else generateMain(null, '');
 }
 main(process.argv);
