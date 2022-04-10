@@ -1,0 +1,64 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>extra-sleep</title><meta name="description" content="Documentation for extra-sleep"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">extra-sleep</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>extra-sleep </h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography"><p>Sleep for specified time.<br>
+📦 <a href="https://www.npmjs.com/package/extra-sleep">Node.js</a>,
+🌐 <a href="https://www.npmjs.com/package/extra-sleep.web">Web</a>,
+🐚 <a href="https://www.npmjs.com/package/extra-sleep.sh">Shell</a>,
+📜 <a href="https://unpkg.com/extra-sleep/">Files</a>,
+📰 <a href="https://nodef.github.io/extra-sleep/">Docs</a>.</p>
+<p><a href="https://en.wikipedia.org/wiki/Sleep_(Unix)">sleep</a> is a command in <em>Unix-like</em> operating systems that <strong>suspends program</strong>
+<strong>execution</strong> for specified time. This provides both a <strong>synchronous</strong> and an
+<strong>asynchronous</strong> method for sleeping <strong>without</strong> doing a <em>busy wait</em>. The
+<em>synchronous</em> sleep is achieved using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait">Atomics.wait()</a> (<a href="https://www.npmjs.com/package/sleep">1</a>), and the
+<em>asynchronous</em> one is achived using <em>Promisified</em> <a href="https://developer.mozilla.org/en-US/docs/Web/API/setTimeout">setTimeout()</a>.</p>
+<p>This package is available in <em>Node.js</em>, <em>Web</em>, and <em>Shell</em> formats. The web
+format is exposed as <code>extra_sleep</code> standalone variable and can be loaded from
+<a href="https://cdn.jsdelivr.net/npm/extra-sleep.web/index.js">jsDelivr CDN</a>.</p>
+<blockquote>
+<p>Stability: <a href="https://www.youtube.com/watch?v=L1j93RnIxEo">Experimental</a>.</p>
+</blockquote>
+<br>
+
+<pre><code class="language-javascript"><span class="hl-0">const</span><span class="hl-1"> {</span><span class="hl-2">sleep</span><span class="hl-1">} = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&#39;extra-sleep&#39;</span><span class="hl-1">);</span><br/><br/><br/><span class="hl-0">async</span><span class="hl-1"> </span><span class="hl-0">function</span><span class="hl-1"> </span><span class="hl-3">main</span><span class="hl-1">() {</span><br/><span class="hl-1">  </span><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-3">log</span><span class="hl-1">(</span><span class="hl-4">&#39;Turn on Alarm&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-6">await</span><span class="hl-1"> </span><span class="hl-3">sleep</span><span class="hl-1">(</span><span class="hl-7">1000</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-3">log</span><span class="hl-1">(</span><span class="hl-4">&#39;Turn on Shower&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">}</span><br/><span class="hl-3">main</span><span class="hl-1">();</span>
+</code></pre>
+<br>
+<br>
+
+
+
+<a href="#index" id="index" style="color: inherit; text-decoration: none;">
+  <h2>Index</h2>
+</a>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://en.wikipedia.org/wiki/Sleep_(Unix)">sleep</a></td>
+<td>Sleep for specified time (async).</td>
+</tr>
+<tr>
+<td><a href="https://nodef.github.io/extra-sleep/modules.html#sleepSync">sleepSync</a></td>
+<td>Sleep for specified time.</td>
+</tr>
+</tbody></table>
+<br>
+<br>
+
+
+
+<a href="#references" id="references" style="color: inherit; text-decoration: none;">
+  <h2>References</h2>
+</a>
+<ul>
+<li><a href="https://www.npmjs.com/package/sleep">sleep package : Erik Dubbelboer</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait">Atomics.wait() : MDN</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/setTimeout">setTimeout() : MDN</a></li>
+</ul>
+<br>
+<br>
+
+<p><a href="https://www.youtube.com/watch?v=rCSCPujLs14"><img src="https://img.youtube.com/vi/rCSCPujLs14/maxresdefault.jpg" alt=""></a>
+<a href="https://zenodo.org/badge/latestdoi/479976846"><img src="https://zenodo.org/badge/479976846.svg" alt="DOI"></a></p>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-function"><a href="modules.html#sleep" class="tsd-kind-icon">sleep</a></li><li class="tsd-kind-function"><a href="modules.html#sleepSync" class="tsd-kind-icon">sleep<wbr/>Sync</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
