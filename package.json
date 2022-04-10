@@ -1,6 +1,6 @@
 {
   "name": "extra-sleep",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Sleep for specified time.",
   "main": "index.js",
   "module": "index.mjs",
