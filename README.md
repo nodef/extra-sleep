@@ -5,20 +5,24 @@ Sleep for specified time.<br>
 📜 [Files](https://unpkg.com/extra-sleep/),
 📰 [Docs](https://nodef.github.io/extra-sleep/).
 
-This provides both a synchronous and an asynchronous method for sleeping without doing a
-busy wait. The synchronous sleep is achieved using [Atomics.wait()] ([1]), and the asynchronous
-one is achived using Promisified [setTimeout()].
+[sleep] is a command in *Unix-like* operating systems that **suspends program**
+**execution** for specified time. This provides both a **synchronous** and an
+**asynchronous** method for sleeping **without** doing a *busy wait*. The
+*synchronous* sleep is achieved using [Atomics.wait()] ([1]), and the
+*asynchronous* one is achived using *Promisified* [setTimeout()].
 
-This package is available in *Node.js*, *Web*, and *Shell* formats. The web format
-is exposed as `extra_sleep` standalone variable and can be loaded from
+This package is available in *Node.js*, *Web*, and *Shell* formats. The web
+format is exposed as `extra_sleep` standalone variable and can be loaded from
 [jsDelivr CDN].
 
 > Stability: [Experimental](https://www.youtube.com/watch?v=L1j93RnIxEo).
 
+[sleep]: https://en.wikipedia.org/wiki/Sleep_(Unix)
 [Atomics.wait()]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait
 [setTimeout()]: https://developer.mozilla.org/en-US/docs/Web/API/setTimeout
 [jsDelivr CDN]: https://cdn.jsdelivr.net/npm/extra-sleep.web/index.js
 [1]: https://www.npmjs.com/package/sleep
+
 
 <br>
 

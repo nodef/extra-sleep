@@ -1,13 +1,19 @@
 Sleep for specified time.<br>
 📦 [Node.js](https://www.npmjs.com/package/extra-sleep),
 🌐 [Web](https://www.npmjs.com/package/extra-sleep.sh.web),
-🖥️ [Shell](https://www.npmjs.com/package/extra-sleep.sh),
+🐚 [Shell](https://www.npmjs.com/package/extra-sleep.sh),
 📜 [Files](https://unpkg.com/extra-sleep.sh/),
 📰 [Docs](https://nodef.github.io/extra-sleep/).
 
-> Similar to [sleep] in Unix.
+[sleep] is a command in *Unix-like* operating systems that **suspends program**
+**execution** for specified time. This package provides the `esleep` command,
+with a **similar behaviour**. Please check examples below. It should be noted
+*small delays* (few milliseconds) are *not accurate*.
+
+> Stability: [Experimental](https://www.youtube.com/watch?v=L1j93RnIxEo).
 
 [sleep]: https://en.wikipedia.org/wiki/Sleep_(Unix)
+
 
 <br>
 
