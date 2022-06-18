@@ -53,3 +53,4 @@ $ esleep 1d 23h
 <br>
 
 [![](https://img.youtube.com/vi/rCSCPujLs14/maxresdefault.jpg)](https://www.youtube.com/watch?v=rCSCPujLs14)
+[![DOI](https://zenodo.org/badge/479976846.svg)](https://zenodo.org/badge/latestdoi/479976846)
