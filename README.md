@@ -65,6 +65,9 @@ main();
 
 [![](https://img.youtube.com/vi/rCSCPujLs14/maxresdefault.jpg)](https://www.youtube.com/watch?v=rCSCPujLs14)
 [![DOI](https://zenodo.org/badge/479976846.svg)](https://zenodo.org/badge/latestdoi/479976846)
+[![Coverage Status](https://coveralls.io/repos/github/nodef/extra-sleep/badge.svg?branch=master)](https://coveralls.io/github/nodef/extra-sleep?branch=master)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/6b49dadb0d8ee557b056/test_coverage)](https://codeclimate.com/github/nodef/extra-sleep/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6b49dadb0d8ee557b056/maintainability)](https://codeclimate.com/github/nodef/extra-sleep/maintainability)
 
 
 [sleep]: https://nodef.github.io/extra-sleep/modules.html#sleep
