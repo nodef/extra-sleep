@@ -1,6 +1,6 @@
 Sleep for specified time.<br>
 📦 [Node.js](https://www.npmjs.com/package/extra-sleep),
-🌐 [Web](https://www.npmjs.com/package/extra-sleep.sh.web),
+🌐 [Web](https://www.npmjs.com/package/extra-sleep.web),
 🐚 [Shell](https://www.npmjs.com/package/extra-sleep.sh),
 📜 [Files](https://unpkg.com/extra-sleep.sh/),
 📰 [Docs](https://nodef.github.io/extra-sleep/).

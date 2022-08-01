@@ -16,7 +16,6 @@ export function sleepSync(ms: number): void {
   var buff = new SharedArrayBuffer(4);
   var view = new Int32Array(buff);
   Atomics.wait(view, 0, 0, ms);
-  // References:
-  // - https://www.npmjs.com/package/sleep
-  // - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait
 }
+// - https://www.npmjs.com/package/sleep
+// - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait

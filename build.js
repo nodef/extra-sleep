@@ -1,269 +1,198 @@
-const os = require('os');
-const {child_process: cp, fs, path} = require('extra-build');
-const {git, github, package}        = require('extra-build');
-const {javascript, jsdoc, markdown} = require('extra-build');
-
+const fs    = require('fs');
+const build = require('extra-build');
 
 const owner  = 'nodef';
+const repo   = build.readMetadata('.').name;
 const srcts  = 'index.ts';
 const outjs  = 'index.js';
 const outmjs = 'index.mjs';
 const outdts = 'index.d.ts';
 const outbin = 'bin.js';
+const LOCATIONS = [
+  'src/index.ts',
+];
 
 
-
-
-// Is given file a submodule?
-function isSubmodule(pth) {
-  if (/^[\W_]|index.ts$/.test(pth)) return false;
-  if (!/\.ts$/.test(pth)) return false;
-  return true;
-}
-
-
-// Get filename keywords for main/sub package.
-function filenameKeywords(fil) {
-  if (fil !== srcts) return [path.symbolname(fil)];
-  return fs.readdirSync('src').filter(isSubmodule).map(path.keywordname);
-}
-
-
-// Get export keywords for main/sub package.
-function exportKeywords(fil) {
-  var txt  = fs.readFileTextSync(`src/${fil}`);
-  var exps = javascript.jsdocSymbols(txt).filter(s => s.export);
-  return exps.map(e => path.symbolname(e.name));
-}
 
 
 // Get keywords for main/sub package.
-function keywords(fil, add=[]) {
-  var m = package.read('.');
-  var s = new Set([...m.keywords, ...add, ...filenameKeywords(fil), ...exportKeywords(fil)]);
+function keywords(ds, more) {
+  var m = build.readMetadata('.');
+  var s = new Set([...m.keywords, ...ds.map(d => d.name), ...(more || [])]);
   return Array.from(s);
 }
 
 
-// Update GitHub details.
-function updateGithub() {
-  var m = package.read('.');
-  var {name, description} = m;
-  var homepage  = `https://www.npmjs.com/package/${name}`;
-  var topics    = keywords(srcts);
-  topics.length = Math.min(topics.length, 20);
-  github.updateDetails(owner, name, {description, homepage, topics});
-}
-
-
-// Generate and publish docs.
-function publishDocs(fil) {
-  var url = git.remoteUrl();
-  var cwd = fs.mkdtempSync(path.join(os.tmpdir(), '.docs'));
-  cp.execLogSync(`git clone ${url} "${cwd}"`);
-  try { cp.execLogSync(`git checkout gh-pages`, {cwd}); }
-  catch(e) { git.setupBranch('gh-pages', {cwd}); }
-  cp.execLogSync(`typedoc "src/${fil}" --out ".docs"`);
-  cp.execLogSync(`rm -rf "${cwd}"/*`);
-  cp.execLogSync(`mv ".docs"/* "${cwd}"/`);
-  git.commitPush('', {cwd});
-  cp.execLogSync(`rm -rf ${cwd}`);
-}
-
-
-// Webify output files.
-function webifyMain(sym) {
-  cp.execLogSync(`browserify "${outjs}" -o "${outjs}.1" -s ${sym}`);
-  cp.execLogSync(`cp "${outmjs}" "${outmjs}.1"`);
-  cp.execLogSync(`terser "${outjs}.1" -o "${outjs}"  -c -m`);
-  cp.execLogSync(`terser "${outmjs}.1" -o "${outmjs}" -c -m`);
-  cp.execLogSync(`rm -f "${outjs}.1"`);
-  cp.execLogSync(`rm -f "${outmjs}.1"`);
-}
-
-
-// Generate main output files.
-function generateMain(fil, sym) {
-  var bld = fil? fil.replace(/\.ts/, '.js') : '';
-  var inp = fil? ` -i .build/${bld}` : '';
-  var env = sym? ` --environment TYPE:web` : '';
-  cp.execLogSync(`rollup -c rollup.config.js` + inp + env);
-  if (sym) webifyMain(sym);
-}
-
-
-// Publish root package to NPM, GitHub.
-function publishRoot(sym, ver) {
-  fs.restoreFileSync('package.json', () => {
-    var m = package.read();
-    m.version  = ver;
-    m.keywords = keywords(srcts);
-    m.preferGlobal = undefined;
-    m.bin          = undefined;
-    if (sym) { m.name += '.web'; }
-    fs.restoreFileSync('README.md', () => {
-      var txt = fs.readFileTextSync('README.md');
-      if (sym) txt = txt.replace(/\[Files\]\((.*?)\/\)/g, '[Files]($1.web/)');
-      fs.writeFileTextSync('README.md', txt);
-      package.write('.', m);
-      package.publish('.');
-      try { package.publishGithub('.', owner); }
-      catch (e) { console.error(e); }
-    });
-  });
+// Publish a root package to NPM, GitHub.
+function publishRootPackage(ds, ver, typ) {
+  var _package = build.readDocument('package.json');
+  var _readme  = build.readDocument('README.md');
+  var m  = build.readMetadata('.');
+  var md = build.readFileText('README.md');
+  m.version  = ver;
+  m.keywords = keywords(ds);
+  m.preferGlobal = undefined;
+  m.bin          = undefined;
+  if (typ) {
+    m.name = `${m.name}.${typ}`;
+    m.description = m.description.replace(/\.$/, `{${typ}}.`);
+    md = md.replace(/(unpkg\.com\/)(\S+?)(\/\))/, `$1$2.${typ}$3`);
+  }
+  build.writeMetadata('.', m);
+  build.writeFileText('README.md', md);
+  build.publish('.');
+  try { build.publishGithub('.', owner); }
+  catch {}
+  build.writeDocument(_package);
+  build.writeDocument(_readme);
 }
 
 
 // Publish bin package to NPM, GitHub.
-function publishBin(sym, ver) {
-  fs.restoreFileSync('package.json', () => {
-    var m = package.read();
-    m.version  = ver;
-    m.keywords = keywords(srcts, ['cli', 'command', 'line', 'interface', 'shell', 'bash']);
-    m.name += '.sh';
-    m.module      = undefined;
-    m.sideEffects = undefined;
-    m.exports     = undefined;
-    fs.restoreFileSync('README.md', () => {
-      fs.writeFileTextSync('README.md', fs.readFileTextSync('bin.md'));
-      fs.writeFileTextSync('index.js',  fs.readFileTextSync('bin.js'));
-      try { cp.execLogSync(`chmod +x index.js`); }
-      catch (e) {}
-      var dts = fs.readFileTextSync('index.d.ts');
-      var mjs = fs.readFileTextSync('index.mjs');
-      fs.unlinkSync('index.d.ts');
-      fs.unlinkSync('index.mjs');
-      package.write('.', m);
-      package.publish('.');
-      try { package.publishGithub('.', owner); }
-      catch (e) { console.error(e); }
-      fs.writeFileTextSync('index.d.ts', dts);
-      fs.writeFileTextSync('index.mjs',  mjs);
-    });
-  });
+function publishBinPackage(ds, ver) {
+  var _package = build.readDocument('package.json');
+  var _readme  = build.readDocument('README.md');
+  var m  = build.readMetadata('.');
+  m.version  = ver;
+  m.keywords = keywords(ds, ['cli', 'command', 'line', 'interface', 'shell', 'bash']);
+  m.name += '.sh';
+  m.module      = undefined;
+  m.sideEffects = undefined;
+  m.exports     = undefined;
+  build.writeFileText('README.md', build.readFileText('bin.md'));
+  build.writeFileText('index.js',  build.readFileText('bin.js'));
+  try { build.exec(`chmod +x index.js`); }
+  catch {}
+  var dts = build.readFileText('index.d.ts');
+  var mjs = build.readFileText('index.mjs');
+  fs.unlinkSync('index.d.ts');
+  fs.unlinkSync('index.mjs');
+  build.writeMetadata('.', m);
+  build.publish('.');
+  try { build.publishGithub('.', owner); }
+  catch (e) { console.error(e); }
+  build.writeFileText('index.d.ts', dts);
+  build.writeFileText('index.mjs',  mjs);
+  build.writeDocument(_package);
+  build.writeDocument(_readme);
 }
 
 
-// Deploy root package to NPM, GitHub.
-function deployRoot(ver) {
-  var m   = package.read();
-  var sym = path.symbolname(m.name);
-  generateMain(srcts, '');
-  publishRoot('', ver);
-  generateMain(srcts, sym);
-  publishRoot(sym, ver);
-  generateMain(null, '');
-  publishBin('', ver);
+// Transform JSDoc in .d.ts file.
+function transformJsdoc(x, dm) {
+  if (!dm.has(x.name)) return null;
+  var link = `[📘](https://github.com/${owner}/${repo}/wiki/${x.name})`;
+  x.description = x.description.trim() + '\n' + link;
+  return x;
 }
 
 
-// Deploy root, sub packages to NPM, GitHub.
-function deployAll() {
-  var m   = package.read();
-  var ver = package.nextUnpublishedVersion(m.name, m.version);
-  cp.execLogSync(`tsc`);
-  updateGithub();
-  publishDocs(srcts);
-  deployRoot(ver);
-  // deploySub(ver);
+// Bundle script for test or publish.
+function bundleScript(ds, pth) {
+  var dm = new Map(ds.map(d => [d.name, d]));
+  build.exec(`tsc`);
+  build.bundleScript(pth);
+  build.jsdocifyScript('index.d.ts', 'index.d.ts', x => transformJsdoc(x, dm));
 }
 
 
-// Process each source file.
-function forEachSourceFile(fn) {
-  for (var f of fs.readdirSync('src')) {
-    if (!/^[A-Z0-9]/i.test(f)) continue;
-    var txt = fs.readFileTextSync(`src/${f}`);
-    var exps = javascript.exportSymbols(txt);
-    var docs = javascript.jsdocSymbols(txt);
-    var dmap = new Map(docs.map(x => [x.name, x]));
-    fn(f, exps, dmap);
-  }
+// Publish root packages to NPM, GitHub.
+function publishRootPackages(ds, ver) {
+  var m   = build.readMetadata('.');
+  var sym = build.symbolname(m.name);
+  bundleScript(ds, `.build/${srcts}`);
+  publishRootPackage(ds, ver, '');
+  build.webifyScript('index.mjs', 'index.mjs', {format: 'esm'});
+  build.webifyScript('index.js',  'index.js',  {format: 'cjs', symbol: sym});
+  publishRootPackage(ds, ver, 'web');
+  bundleScript(ds, null);
+  publishBinPackage(ds, ver);
 }
 
 
-// Update index table for README, wiki.
-function updateMarkdownIndex(rkind) {
-  forEachSourceFile((f, exps, dmap) => {
-    var nam = f.replace(/\..*/, '');
-    var pre = f === 'index.ts'? '' : nam;
-    var out = pre? `wiki/${nam}.md` : 'README.md';
-    if (!fs.existsSync(out)) return;
-    var txt = fs.readFileTextSync(out);
-    txt = markdown.replaceTables(txt, (full, rows) => {
-      if (rows.length < 1 || rows[0].length < 2) return full;
-      rows = rows.map(r => [r[0].trim(), r[1].trim()]);
-      if (!/property/i.test(rows[0][0]))    return full;
-      if (!/description/i.test(rows[0][1])) return full;
-      var rmap = new Map(rows.map((r, i) => [r[0], i]));
-      for (var e of exps) {
-        if (!dmap.has(e.name)) continue;
-        if (!rkind.test(e.kind)) continue;
-        var key  = `[${e.name}]`;
-        var val = jsdoc.parse(dmap.get(e.name).jsdoc).description.trim();
-        if (!rmap.has(key)) rows.push([key, val]);
-        else rows[rmap.get(key)][1] = val;
-      }
-      var top = '| ' + rows[0].join(' | ') + ' |\n';
-      var mid = '| ' + rows[0].map(r => ` ---- `).join(' | ') + ' |\n';
-      var bot = rows.slice(1).map(r => '| ' + r.join(' | ') + ' |\n').join('');
-      return top + mid + bot;
-    });
-    fs.writeFileTextSync(out, txt);
-  });
+// Publish docs.
+function publishDocs(ds) {
+  build.updateGithubRepoDetails({topics: keywords(ds)});
+  build.generateDocs(`src/${srcts}`);
+  build.publishDocs();
 }
 
 
-// Get docs link reference for jsdoc symbol.
-function docsLinkReference(sym, pre, repo) {
-  var d    = jsdoc.parse(sym.jsdoc);
-  var root = `https://${owner}.github.io/${repo}`;
-  var name = sym.name;
-  var pred = pre? `${pre}.` : '';
-  var prem = pre? `modules/${pre}.html` : 'modules.html';
-  switch (d.kind) {
-    case 'interface': return `[${name}]: ${root}/interfaces/${pred}${name}.html`;
-    case 'class':     return `[${name}]: ${root}/classes/${pred}${name}.html`;
-    default:          return `[${name}]: ${root}/${prem}#${name}`;
-  }
+// Pushish root, sub packages to NPM, GitHub.
+function publishPackages(ds) {
+  var m   = build.readMetadata('.');
+  var ver = build.nextUnpublishedVersion(m.name, m.version);
+  publishRootPackages(ds, ver);
 }
 
 
-// Update link references for README, wiki.
-function updateMarkdownLinkReferences() {
-  var m = package.read('.');
-  forEachSourceFile((f, exps, dmap) => {
-    var nam = f.replace(/\..*/, '');
-    var pre = f === 'index.ts'? '' : nam;
-    var out = pre? `wiki/${nam}.md` : 'README.md';
-    if (!fs.existsSync(out)) return;
-    var txt = fs.readFileTextSync(out);
-    txt = markdown.replaceLinkReferences(txt, (full, name) => {
-      if (!dmap.has(name)) return full;
-      return docsLinkReference(dmap.get(name), pre, m.name);
-    });
-    var lset = new Set(markdown.links(txt).filter(x => !x.url).map(x => x.ref || x.name));
-    var rset = new Set(markdown.linkReferences(txt).map(x => x.name));
-    for (var l of lset) {
-      if (rset.has(l)) continue;
-      if (!dmap.has(l)) continue;
-      txt += docsLinkReference(dmap.get(l), pre, m.name) + '\n';
+// Generate wiki for all exported symbols.
+function generateWiki(ds) {
+  var rkind = /namespace|function/i, useWiki = true;
+  var dm = new Map(ds.map(d => [d.name, d]));
+  for (var d of ds) {
+    var f = `wiki/${d.name}.md`;
+    if (!rkind.test(d.kind)) continue;
+    if (!fs.existsSync(f))  {
+      var txt = build.wikiMarkdown(d, {owner, repo, useWiki});
+      build.writeFileText(f, txt);
     }
-    fs.writeFileTextSync(out, txt);
-  });
+    else {
+      var txt = build.readFileText(f);
+      txt = build.wikiUpdateDescription(txt, d);
+      txt = build.wikiUpdateCodeReference(txt, d, {owner, repo, useWiki})
+      txt = build.wikiUpdateLinkReferences(txt, dm, {owner, repo, useWiki});
+      build.writeFileText(f, txt);
+    }
+  }
 }
 
 
-// Update markdowns README.
-function updateMarkdown() {
-  updateMarkdownIndex(/const|class|(async\s+)?function\*?/);
-  updateMarkdownLinkReferences();
+// Get README index descriptions.
+function readmeDescription(d) {
+  var rkind = /namespace|function/i;
+  var sname = /a?sync$/i;
+  if (!rkind.test(d.kind)) return '';
+  if (sname.test(d.name) && d.name!=='spawnAsync') return '';
+  var a = d.description.replace(/The.+method/, 'This method');
+  a = a.replace(', with command-line arguments in ', ' and ');
+  a = a.replace(/(\S)`(.*?)`/, '$1 `$2`');
+  return a;
 }
 
 
+// Sort docs details by original order.
+function compareLocation(a, b) {
+  if (a.kind!==b.kind) return 0;
+  var alocn = a.location.replace(/.*?@types\/node.*?\:/, 'src/_file.ts:');
+  var blocn = b.location.replace(/.*?@types\/node.*?\:/, 'src/_file.ts:');
+  var [afile] = alocn.split(':');
+  var [bfile] = blocn.split(':');
+  return LOCATIONS.indexOf(afile) - LOCATIONS.indexOf(bfile) || alocn.localeCompare(blocn);
+}
+
+
+// Update README.
+function updateReadme(ds) {
+  var m  = build.readMetadata('.');
+  var repo = m.name;
+  var ds = ds.slice().sort(compareLocation);
+  var dm = new Map(ds.map(d => [d.name, d]));
+  var txt = build.readFileText('README.md');
+  txt = build.wikiUpdateIndex(txt, dm, readmeDescription);
+  txt = build.wikiUpdateLinkReferences(txt, dm, {owner, repo});
+  build.writeFileText('README.md', txt);
+}
+
+
+// Finally.
 function main(a) {
-  if (a[2] === 'deploy') deployAll();
-  else if (a[2] === 'markdown') updateMarkdown();
-  else generateMain(null, '');
+  var p  = build.loadDocs([`src/${srcts}`]);
+  var ds = p.children.map(build.docsDetails);
+  if (a[2]==='wiki') generateWiki(ds);
+  else if (a[2]==='readme') updateReadme(ds);
+  else if (a[2]==='publish-docs') publishDocs(ds);
+  else if (a[2]==='publish-packages') publishPackages(ds);
+  else bundleScript(ds);
 }
 main(process.argv);
