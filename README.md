@@ -3,7 +3,8 @@ Sleep for specified time.<br>
 🌐 [Web](https://www.npmjs.com/package/extra-sleep.web),
 🐚 [Shell](https://www.npmjs.com/package/extra-sleep.sh),
 📜 [Files](https://unpkg.com/extra-sleep/),
-📰 [Docs](https://nodef.github.io/extra-sleep/).
+📰 [Docs](https://nodef.github.io/extra-sleep/),
+📘 [Wiki](https://github.com/nodef/extra-sleep/wiki/).
 
 [sleep] is a command in *Unix-like* operating systems that **suspends program**
 **execution** for specified time. This provides both a **synchronous** and an
@@ -55,9 +56,10 @@ main();
 
 ## References
 
-- [sleep package : Erik Dubbelboer](https://www.npmjs.com/package/sleep)
-- [Atomics.wait() : MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
-- [setTimeout() : MDN](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout)
+- [Sleep (Unix): Wikipedia](https://en.wikipedia.org/wiki/Sleep_(Unix))
+- [sleep package by Erik Dubbelboer](https://www.npmjs.com/package/sleep)
+- [setTimeout(): MDN Web docs](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout)
+- [Atomics.wait(): MDN Web docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
 
 
 <br>

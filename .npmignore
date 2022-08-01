@@ -15,7 +15,7 @@ bin.md
 .travis.yml
 .coveralls.yml
 tsconfig.json
-jestconfig.json
+jest.config.js
 rollup.config.js
 build.js
 bin.js
