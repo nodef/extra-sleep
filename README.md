@@ -18,7 +18,7 @@ format is exposed as `extra_sleep` standalone variable and can be loaded from
 
 > Stability: [Experimental](https://www.youtube.com/watch?v=L1j93RnIxEo).
 
-[sleep]: https://en.wikipedia.org/wiki/Sleep_(Unix)
+[sleep]: https://nodef.github.io/extra-sleep/functions/sleep.html
 [Atomics.wait()]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait
 [setTimeout()]: https://developer.mozilla.org/en-US/docs/Web/API/setTimeout
 [jsDelivr CDN]: https://cdn.jsdelivr.net/npm/extra-sleep.web/index.js
@@ -72,5 +72,5 @@ main();
 [![Maintainability](https://api.codeclimate.com/v1/badges/6b49dadb0d8ee557b056/maintainability)](https://codeclimate.com/github/nodef/extra-sleep/maintainability)
 
 
-[sleep]: https://nodef.github.io/extra-sleep/modules.html#sleep
-[sleepSync]: https://nodef.github.io/extra-sleep/modules.html#sleepSync
+[sleep]: https://nodef.github.io/extra-sleep/functions/sleep.html
+[sleepSync]: https://nodef.github.io/extra-sleep/functions/sleepSync.html
