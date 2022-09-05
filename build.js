@@ -82,6 +82,7 @@ function publishBinPackage(ds, ver) {
 function transformJsdoc(x, dm) {
   if (!dm.has(x.name)) return null;
   var link = `[📘](https://github.com/${owner}/${repo}/wiki/${x.name})`;
+  x.description = x.description.replace(/\[📘\]\(.+?\)/g, '');
   x.description = x.description.trim() + '\n' + link;
   return x;
 }
@@ -112,7 +113,7 @@ function publishRootPackages(ds, ver) {
 
 // Publish docs.
 function publishDocs(ds) {
-  build.updateGithubRepoDetails({topics: keywords(ds)});
+  build.updateGithubRepoDetails({owner, repo, topics: keywords(ds)});
   build.generateDocs(`src/${srcts}`);
   build.publishDocs();
 }
