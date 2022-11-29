@@ -1,5 +1,7 @@
-import {sleep}     from "../src";
-import {sleepSync} from "../src";
+import {
+  sleep,
+  sleepSync,
+} from "../src";
 
 
 
