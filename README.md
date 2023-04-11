@@ -12,9 +12,9 @@ Sleep for specified time.<br>
 *synchronous* sleep is achieved using [Atomics.wait()] ([1]), and the
 *asynchronous* one is achived using *Promisified* [setTimeout()].
 
-This package is available in *Node.js*, *Web*, and *Shell* formats. The web
-format is exposed as `extra_sleep` standalone variable and can be loaded from
-[jsDelivr CDN].
+This package is available in *Node.js* and *Web* formats. To use it on the web,
+simply use the `extra_sleep` global variable after loading with a `<script>`
+tag from the [jsDelivr CDN].
 
 > Stability: [Experimental](https://www.youtube.com/watch?v=L1j93RnIxEo).
 
