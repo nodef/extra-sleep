@@ -73,7 +73,7 @@ main();
 [![Coverage Status](https://coveralls.io/repos/github/nodef/extra-sleep/badge.svg?branch=master)](https://coveralls.io/github/nodef/extra-sleep?branch=master)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6b49dadb0d8ee557b056/test_coverage)](https://codeclimate.com/github/nodef/extra-sleep/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6b49dadb0d8ee557b056/maintainability)](https://codeclimate.com/github/nodef/extra-sleep/maintainability)
-
+![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/extra-sleep)
 
 [sleep]: https://github.com/nodef/extra-sleep/wiki/sleep
 [sleepSync]: https://github.com/nodef/extra-sleep/wiki/sleepSync
