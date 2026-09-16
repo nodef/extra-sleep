@@ -2,12 +2,12 @@
 
 ▌
 📦 [JSR](https://jsr.io/@nodef/extra-sleep),
-📰 [Docs](https://jsr.io/@nodef/extra-sleep/doc),
+📦 [NPM](https://www.npmjs.com/package/extra-sleep),
+📰 [Docs](https://jsr.io/@nodef/extra-sleep/doc).
 
 [sleep]: https://github.com/nodef/extra-sleep/wiki/sleep
 [Atomics.wait()]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait
 [setTimeout()]: https://developer.mozilla.org/en-US/docs/Web/API/setTimeout
-[jsDelivr CDN]: https://cdn.jsdelivr.net/npm/extra-sleep.web/index.js
 [1]: https://www.npmjs.com/package/sleep
 
 <br>
@@ -55,5 +55,5 @@ sleepSync(1e+6);  // And relax!
 ![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/extra-sleep)
 
 
-[sleep]: https://jsr.io/@nodef/extra-sql/doc/~/sleep
-[sleepSync]: https://jsr.io/@nodef/extra-sql/doc/~/sleepSync
+[sleep]: https://jsr.io/@nodef/extra-sleep/doc/~/sleep
+[sleepSync]: https://jsr.io/@nodef/extra-sleep/doc/~/sleepSync

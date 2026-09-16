@@ -10,7 +10,7 @@ interface Options {
 
 
 const NAME      = "extra-sleep";
-const VERSION   = "0.0.1";
+const VERSION   = "1.2.0";
 const RQUANTITY = /([\d\.e+-]+)\s*(\w+)?/gi;
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
