@@ -1,11 +1,13 @@
 [sleep] is a command in *Unix-like* operating systems that **suspends program** **execution** for specified time. This package provides both a **synchronous** and an **asynchronous** method for sleeping **without** doing a *busy wait*. The *synchronous* sleep is achieved using [Atomics.wait()] ([1]), and the *asynchronous* one is achived using *Promisified* [setTimeout()].
 
+This package also provides a command line tool `xsleep` -- with a **similar behaviour** as [sleep] -- that can be used to sleep for specified time in seconds, minutes, hours, or days. Please check examples below. It should be noted *small delays* (few milliseconds) are *not accurate*.
+
 ▌
 📦 [JSR](https://jsr.io/@nodef/extra-sleep),
 📦 [NPM](https://www.npmjs.com/package/extra-sleep),
 📰 [Docs](https://jsr.io/@nodef/extra-sleep/doc).
 
-[sleep]: https://github.com/nodef/extra-sleep/wiki/sleep
+[sleep]: https://en.wikipedia.org/wiki/Sleep_(Unix)
 [Atomics.wait()]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait
 [setTimeout()]: https://developer.mozilla.org/en-US/docs/Web/API/setTimeout
 [1]: https://www.npmjs.com/package/sleep
@@ -24,6 +26,22 @@ sleepSync(1e+6);  // And relax!
 ```
 
 <br>
+
+```bash
+# Install CLI tool
+$ deno install --global --name xsleep jsr:@nodef/extra-sleep/bin.ts
+
+# Sleep for 0.1 seconds
+$ xsleep 0.1
+
+# Sleep for 1.23 minutes
+$ xsleep 1.23m
+
+# Sleep for 1 day 23 hours
+$ xsleep 1d 23h
+```
+
+<br>
 <br>
 
 
@@ -33,6 +51,22 @@ sleepSync(1e+6);  // And relax!
 |  ----  |  ----  |
 | [sleep] | Sleep for specified time (async). |
 | [sleepSync] | Sleep for specified time. |
+
+<br>
+
+```bash
+$ xsleep <number>[unit] ... | [option]
+
+# Units:
+# s: sleep for number seconds.
+# m: sleep for number minutes.
+# h: sleep for number hours.
+# d: sleep for number days.
+
+# Options:
+# --help: get help
+# --version: get version details
+```
 
 <br>
 <br>

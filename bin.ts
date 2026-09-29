@@ -1,4 +1,4 @@
-import {sleep}   from "./index.ts";
+import {sleep} from "./index.ts";
 
 
 interface Options {
@@ -9,8 +9,8 @@ interface Options {
 };
 
 
-const NAME      = "extra-sleep";
-const VERSION   = "1.2.0";
+const NAME      = "xsleep";
+const VERSION   = "1.2.2";
 const RQUANTITY = /([\d\.e+-]+)\s*(\w+)?/gi;
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
@@ -91,7 +91,7 @@ function showError(msg: string): void {
 
 async function main(a: string[]): Promise<void> {
   const o: Options = {help: false, version: false, error: null, value: []};
-  for (let i=2; i<a.length;)
+  for (let i=0; i<a.length;)
     i = parseOption(o, a[i], a, i);
   if (o.help) return showHelp();
   else if (o.version) return showVersion();

@@ -1,8 +1,11 @@
 {
   "name": "@nodef/extra-sleep",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "license": "MIT",
-  "exports": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./bin.ts": "./bin.ts"
+  },
   "publish": {
     "exclude": [
       ".github/",
