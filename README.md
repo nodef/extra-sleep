@@ -4,7 +4,7 @@ This package also provides a command line tool `xsleep` -- with a **similar beha
 
 ▌
 📦 [JSR](https://jsr.io/@nodef/extra-sleep),
-📦 [NPM](https://www.npmjs.com/package/extra-sleep),
+📦 [NPM](https://www.npmjs.com/package/@nodef/extra-sleep),
 📰 [Docs](https://jsr.io/@nodef/extra-sleep/doc).
 
 [sleep]: https://en.wikipedia.org/wiki/Sleep_(Unix)
